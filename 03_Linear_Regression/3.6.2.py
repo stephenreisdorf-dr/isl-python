@@ -77,6 +77,7 @@ fig.add_trace(
         , mode='markers'
     )
 )
+fig.show()
 
 # Scale - Location
 import numpy as np
@@ -88,6 +89,7 @@ fig.add_trace(
         , mode='markers'
     )
 )
+fig.show()
 
 # Residual vs Leverage
 influence = results.get_influence()
@@ -100,9 +102,25 @@ fig.add_trace(
         , mode='markers'
     )
 )
+fig.show()
 
 # QQ Plot
 from statsmodels.graphics.gofplots import qqplot
-qqplot(results.resid_pearson)
+qqplot_data = qqplot(results.resid_pearson, line='s').gca().lines
 
-dir(results)
+fig = go.Figure()
+fig.add_trace(
+    go.Scatter(
+        x=qqplot_data[0].get_xdata()
+        , y=qqplot_data[0].get_ydata()
+        , mode='markers'
+    )
+)
+fig.add_trace(
+    go.Scatter(
+        x=qqplot_data[1].get_xdata()
+        , y=qqplot_data[1].get_ydata()
+        , mode='lines'
+    )
+)
+fig.show()
