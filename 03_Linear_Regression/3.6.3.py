@@ -39,7 +39,8 @@ print(results.summary())
 # See the names of things that can be accessed
 print(dir(results))
 
+# Calculate VIF for each variable
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
 vif = [ variance_inflation_factor(results.model.exog, i) for i in range(results.model.exog.shape[1]) ]
-pd.DataFrame(vif, index=X.columns, columns=['VIF'])
+print(pd.DataFrame(vif, index=X.columns, columns=['VIF']))
