@@ -47,3 +47,62 @@ print(results.predict(X_pred))
 
 # Get confidence and prediction intervals
 print(results.get_prediction(X_pred).conf_int())
+
+# Plot medv vs lstat
+from plotly import graph_objects as go
+
+# Create a new Figure
+fig = go.Figure()
+# Plot the data as is
+fig.add_trace(
+    go.Scatter(x=boston['LSTAT'], y=boston['MEDV'], mode='markers')
+)
+# Plot the predicted line
+fig.add_trace(
+    go.Scatter(x=boston['LSTAT'], y=results.fittedvalues)
+)
+
+# Some diagnostic plots (these are different than the book)
+# READ MORE:
+# https://www.statsmodels.org/stable/examples/notebooks/generated/regression_plots.html#Single-Variable-Regression-Diagnostics
+from statsmodels.graphics.regressionplots import plot_fit, plot_leverage_resid2, plot_partial_residuals, plot_regress_exog
+plot_regress_exog(results, "LSTAT")
+
+# Residuals vs Fitted plot
+fig = go.Figure()
+fig.add_trace(
+    go.Scatter(
+        x=results.fittedvalues
+        , y=results.resid
+        , mode='markers'
+    )
+)
+
+# Scale - Location
+import numpy as np
+fig = go.Figure()
+fig.add_trace(
+    go.Scatter(
+        x=results.fittedvalues
+        , y=np.sqrt(np.abs(results.resid_pearson))
+        , mode='markers'
+    )
+)
+
+# Residual vs Leverage
+influence = results.get_influence()
+leverage = influence.hat_matrix_diag
+fig = go.Figure()
+fig.add_trace(
+    go.Scatter(
+        x=leverage
+        , y=results.resid_pearson
+        , mode='markers'
+    )
+)
+
+# QQ Plot
+from statsmodels.graphics.gofplots import qqplot
+qqplot(results.resid_pearson)
+
+dir(results)
